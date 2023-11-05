@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from "react"
 import {useDebounce} from "@uidotdev/usehooks"
 
-export default function FormAddress() {
+export default function FormAddress(props: { address: string, onAddressChange: (address: string) => void }) {
     const [possibilities, setPossibilities] = useState<string[]>([])
-    const [address, setAddress] = useState<string>("")
-    const addressForRequest = useDebounce(address, 1000)
+    const addressForRequest = useDebounce(props.address, 1000)
 
     useEffect(() => {
         const updatePossibilites = async () => {
@@ -14,7 +13,7 @@ export default function FormAddress() {
                 const addresses = data.features.map(
                     (feature: any) => feature.properties.label
                 )
-                if(addresses.length === 1 && addresses[0] === address) {
+                if(addresses.length === 1 && addresses[0] === props.address) {
                     console.log('adresse actuelle')
                     setPossibilities([])
                 }
@@ -31,7 +30,7 @@ export default function FormAddress() {
 
     const handleFormChange = useCallback(
         (event: React.ChangeEvent<HTMLInputElement>) => {
-            setAddress(event.target.value)
+            props.onAddressChange(event.target.value)
         },
         []
     )
@@ -39,7 +38,7 @@ export default function FormAddress() {
     const handleListClick = useCallback(
         (position: number) => {
             if (position >= 0) {
-                setAddress(possibilities[position])
+                props.onAddressChange(possibilities[position])
                 setPossibilities([])
             }
         },
@@ -52,7 +51,7 @@ export default function FormAddress() {
             <input 
                 type="text" 
                 placeholder="Saisir votre adresse"
-                value={address}
+                value={props.address}
                 onChange={handleFormChange}
             />
             {possibilities.length > 0 && (
