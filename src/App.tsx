@@ -9,8 +9,15 @@ function App() {
     setAddress(address)
   }
 
+  const handleShowButtonClick = () => {
+    console.log(address)
+  }
+
   return (
-    <FormAddress address={address} onAddressChange={handleChangeAddress}/>
+    <>
+      <FormAddress address={address} onAddressChange={handleChangeAddress}/>
+      <button onClick={handleShowButtonClick}>Afficher dans la console</button>
+    </>
   )
 }
 
