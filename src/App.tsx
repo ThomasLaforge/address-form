@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import './App.css'
 import FormAddress from './FormAddress'
 
@@ -9,9 +9,9 @@ function App() {
     setAddress(address)
   }
 
-  const handleShowButtonClick = () => {
+  const handleShowButtonClick = useCallback(() => {
     console.log(address)
-  }
+  }, [address])
 
   return (
     <>

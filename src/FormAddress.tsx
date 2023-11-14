@@ -3,18 +3,17 @@ import {useDebounce} from "@uidotdev/usehooks"
 
 export default function FormAddress(props: { address: string, onAddressChange: (address: string) => void }) {
     const [possibilities, setPossibilities] = useState<string[]>([])
-    const addressForRequest = useDebounce(props.address, 1000)
+    const addressForRequest = useDebounce(props.address, 200)
 
     useEffect(() => {
         const updatePossibilites = async () => {
-            if (addressForRequest.length > 3) {
+            if (props.address.length > 3) {
                 const response = await fetch(`https://api-adresse.data.gouv.fr/search/?q=${addressForRequest}`)
                 const data = await response.json()
-                const addresses = data.features.map(
+                const addresses: string[] = data.features.map(
                     (feature: any) => feature.properties.label
                 )
-                if(addresses.length === 1 && addresses[0] === props.address) {
-                    console.log('adresse actuelle')
+                if(addresses.filter(a => a === addressForRequest).length > 0) {
                     setPossibilities([])
                 }
                 else {
@@ -24,7 +23,6 @@ export default function FormAddress(props: { address: string, onAddressChange: (
                 setPossibilities([])
             }
         }
-        console.log('thomas')
         updatePossibilites()
     }, [addressForRequest])
 
@@ -37,10 +35,8 @@ export default function FormAddress(props: { address: string, onAddressChange: (
 
     const handleListClick = useCallback(
         (position: number) => {
-            if (position >= 0) {
-                props.onAddressChange(possibilities[position])
-                setPossibilities([])
-            }
+            props.onAddressChange(possibilities[position])
+            setPossibilities([])
         },
         [possibilities]
     )
